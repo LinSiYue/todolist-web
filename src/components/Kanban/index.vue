@@ -204,9 +204,8 @@ export default {
     background: rgba(0, 0, 0, 0.003);
     box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
   }
-
-  .editor-container {
-    line-height: 0;
-  }
+  /*.editor-container {*/
+    /*line-height: 1.5;*/
+  /*}*/
 </style>
 
