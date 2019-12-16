@@ -8,45 +8,21 @@ const componentsRouter = {
   redirect: 'noRedirect',
   name: 'ComponentDemo',
   meta: {
-    title: 'Components',
+    title: 'Kanban',
     icon: 'component'
   },
   children: [
     {
-      path: 'tinymce',
-      component: () => import('@/views/components-demo/tinymce'),
-      name: 'TinymceDemo',
-      meta: { title: 'Tinymce' }
+      path: 'project-kanban',
+      component: () => import('@/views/kanban/project-kanban'),
+      name: 'ProjectKanban',
+      meta: { title: 'Project Kanban' }
     },
     {
-      path: 'count-to',
-      component: () => import('@/views/components-demo/count-to'),
-      name: 'CountToDemo',
-      meta: { title: 'Count To' }
-    },
-    {
-      path: 'drag-dialog',
-      component: () => import('@/views/components-demo/drag-dialog'),
-      name: 'DragDialogDemo',
-      meta: { title: 'Drag Dialog' }
-    },
-    {
-      path: 'drag-select',
-      component: () => import('@/views/components-demo/drag-select'),
-      name: 'DragSelectDemo',
-      meta: { title: 'Drag Select' }
-    },
-    {
-      path: 'dnd-list',
-      component: () => import('@/views/components-demo/dnd-list'),
-      name: 'DndListDemo',
-      meta: { title: 'Dnd List' }
-    },
-    {
-      path: 'drag-kanban',
-      component: () => import('@/views/components-demo/drag-kanban'),
-      name: 'DragKanbanDemo',
-      meta: { title: 'Drag Kanban' }
+      path: 'task-kanban',
+      component: () => import('@/views/kanban/task-kanban'),
+      name: 'TaskKanban',
+      meta: { title: 'Task Kanban' }
     }
   ]
 }
