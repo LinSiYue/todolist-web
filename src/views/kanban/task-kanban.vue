@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="top-container">
-      <el-button class="add-btn" icon="el-icon-plus" @click="addList"/>
+      <el-button class="add-btn" icon="el-icon-plus" @click="addList" />
       |
       <el-select v-model="value8" filterable placeholder="Filter task">
         <el-option
@@ -19,6 +19,7 @@
         :group="group"
         class="kanban not started"
         :header-text="'Not Started('+ list1.length + ')'"
+        @updateTaskData="updateTaskData"
       />
       <Kanban
         :key="2"
@@ -26,18 +27,37 @@
         :group="group"
         class="kanban todo"
         :header-text="'In Progress('+ list2.length + ')'"
+        @updateTaskData="updateTaskData"
       />
-      <Kanban :key="3" :list="list3" :group="group" class="kanban working" :header-text="'Test('+ list3.length + ')'"/>
-      <Kanban :key="4" :list="list4" :group="group" class="kanban done" :header-text="'Done('+ list4.length + ')'"/>
+      <Kanban
+        :key="3"
+        :list="list3"
+        :group="group"
+        class="kanban working"
+        :header-text="'Test('+ list3.length + ')'"
+        @updateTaskData="updateTaskData"
+      />
+      <Kanban
+        :key="4"
+        :list="list4"
+        :group="group"
+        class="kanban done"
+        :header-text="'Done('+ list4.length + ')'"
+        @updateTaskData="updateTaskData"
+      />
     </div>
-    <drag-dialog :dialog-table-visible="dialogTableVisible" @setDialogTableVisible="setDialogTableVisible"/>
+    <drag-dialog
+      :dialog-table-visible="dialogTableVisible"
+      @setDialogTableVisible="setDialogTableVisible"
+      @setTaskData="addTaskData"
+    />
   </div>
 </template>
 <script>
-  import Kanban from '@/components/Kanban'
-  import DragDialog from '@/components/DragDialog'
+import Kanban from '@/components/Kanban'
+import DragDialog from '@/components/DragDialog'
 
-  const content = `
+const content = `
 **This is test**
 
 * vue
@@ -46,176 +66,202 @@
 
 `
 
-  export default {
-    name: 'DragKanbanDemo',
-    components: {
-      Kanban,
-      DragDialog
+export default {
+  name: 'DragKanbanDemo',
+  components: {
+    Kanban,
+    DragDialog
+  },
+  data() {
+    return {
+      dialogTableVisible: false,
+      group: 'mission',
+      list1: [
+        {
+          name: 'Mission',
+          id: 1,
+          content: content,
+          owner: 'Reece Lin',
+          pair: 'Alex Zhang',
+          timeSheet: 8,
+          spentTime: 0,
+          fromDate: '2019-12-04 01:00:00'
+        },
+        {
+          name: 'Mission',
+          id: 2,
+          content: content,
+          owner: 'Reece Lin',
+          pair: '',
+          timeSheet: 8,
+          spentTime: 0,
+          fromDate: '2019-12-04 08:00:00'
+        },
+        {
+          name: 'Mission',
+          id: 3,
+          content: content,
+          owner: 'Reece Lin',
+          pair: 'Alex Zhang',
+          timeSheet: 8,
+          spentTime: 0,
+          fromDate: '2019-12-04 12:00:00'
+        },
+        {
+          name: 'Mission',
+          id: 4,
+          content: content,
+          owner: 'Reece Lin',
+          pair: 'Alex Zhang',
+          timeSheet: 8,
+          spentTime: 0,
+          fromDate: '2019-12-04 00:00:00'
+        }
+      ],
+      list2: [
+        {
+          name: 'Mission',
+          id: 5,
+          content: content,
+          owner: 'Reece Lin',
+          pair: 'Alex Zhang',
+          timeSheet: 8,
+          spentTime: 3,
+          fromDate: '2019-12-04 00:00:00'
+        },
+        {
+          name: 'Mission',
+          id: 6,
+          content: content,
+          owner: 'Reece Lin',
+          pair: '',
+          timeSheet: 8,
+          spentTime: 13,
+          fromDate: '2019-12-04 07:00:00'
+        },
+        {
+          name: 'Mission',
+          id: 7,
+          content: content,
+          owner: 'Reece Lin',
+          pair: 'Alex Zhang',
+          timeSheet: 8,
+          spentTime: 3,
+          fromDate: '2019-12-04 13:00:00'
+        }
+      ],
+      list3: [
+        {
+          name: 'Mission',
+          id: 8,
+          content: content,
+          owner: 'Reece Lin',
+          pair: 'Alex Zhang',
+          timeSheet: 8,
+          spentTime: 15,
+          fromDate: '2019-12-04 15:00:00'
+        },
+        {
+          name: 'Mission',
+          id: 9,
+          content: content,
+          owner: 'Reece Lin',
+          pair: 'Alex Zhang',
+          timeSheet: 8,
+          spentTime: 10,
+          fromDate: '2019-12-04 06:00:00'
+        },
+        {
+          name: 'Mission',
+          id: 10,
+          content: content,
+          owner: 'Reece Lin',
+          pair: '',
+          timeSheet: 8,
+          spentTime: 3,
+          fromDate: '2019-12-04 17:00:00'
+        }
+      ],
+      list4: [
+        {
+          name: 'Mission',
+          id: 11,
+          content: content,
+          owner: 'Reece Lin',
+          pair: 'Alex Zhang',
+          timeSheet: 8,
+          spentTime: 15,
+          fromDate: '2019-12-04 09:13:00'
+        },
+        {
+          name: 'Mission',
+          id: 12,
+          content: content,
+          owner: 'Reece Lin',
+          pair: 'Alex Zhang',
+          timeSheet: 8,
+          spentTime: 10,
+          fromDate: '2019-12-04 08:30:00'
+        },
+        {
+          name: 'Mission',
+          id: 13,
+          content: content,
+          owner: 'Reece Lin',
+          pair: '',
+          timeSheet: 8,
+          spentTime: 3,
+          fromDate: '2019-12-04 08:05:00'
+        }
+      ],
+      options: [{
+        value: '选项1',
+        label: 'Shopping System'
+      }, {
+        value: '选项2',
+        label: 'Todolist System'
+      }, {
+        value: '选项3',
+        label: 'Music System'
+      }],
+      value8: ''
+    }
+  },
+  methods: {
+    addList(e) {
+      this.dialogTableVisible = true
     },
-    data() {
-      return {
-        dialogTableVisible: false,
-        group: 'mission',
-        list1: [
-          {
-            name: 'Mission',
-            id: 1,
-            content: content,
-            owner: 'Reece Lin',
-            pair: 'Alex Zhang',
-            timeSheet: 8,
-            spentTime: 0,
-            fromDate: '2019-12-04 01:00:00'
-          },
-          {
-            name: 'Mission',
-            id: 2,
-            content: content,
-            owner: 'Reece Lin',
-            pair: '',
-            timeSheet: 8,
-            spentTime: 0,
-            fromDate: '2019-12-04 08:00:00'
-          },
-          {
-            name: 'Mission',
-            id: 3,
-            content: content,
-            owner: 'Reece Lin',
-            pair: 'Alex Zhang',
-            timeSheet: 8,
-            spentTime: 0,
-            fromDate: '2019-12-04 12:00:00'
-          },
-          {
-            name: 'Mission',
-            id: 4,
-            content: content,
-            owner: 'Reece Lin',
-            pair: 'Alex Zhang',
-            timeSheet: 8,
-            spentTime: 0,
-            fromDate: '2019-12-04 00:00:00'
-          }
-        ],
-        list2: [
-          {
-            name: 'Mission',
-            id: 5,
-            content: content,
-            owner: 'Reece Lin',
-            pair: 'Alex Zhang',
-            timeSheet: 8,
-            spentTime: 3,
-            fromDate: '2019-12-04 00:00:00'
-          },
-          {
-            name: 'Mission',
-            id: 6,
-            content: content,
-            owner: 'Reece Lin',
-            pair: '',
-            timeSheet: 8,
-            spentTime: 13,
-            fromDate: '2019-12-04 07:00:00'
-          },
-          {
-            name: 'Mission',
-            id: 7,
-            content: content,
-            owner: 'Reece Lin',
-            pair: 'Alex Zhang',
-            timeSheet: 8,
-            spentTime: 3,
-            fromDate: '2019-12-04 13:00:00'
-          }
-        ],
-        list3: [
-          {
-            name: 'Mission',
-            id: 8,
-            content: content,
-            owner: 'Reece Lin',
-            pair: 'Alex Zhang',
-            timeSheet: 8,
-            spentTime: 15,
-            fromDate: '2019-12-04 15:00:00'
-          },
-          {
-            name: 'Mission',
-            id: 9,
-            content: content,
-            owner: 'Reece Lin',
-            pair: 'Alex Zhang',
-            timeSheet: 8,
-            spentTime: 10,
-            fromDate: '2019-12-04 06:00:00'
-          },
-          {
-            name: 'Mission',
-            id: 10,
-            content: content,
-            owner: 'Reece Lin',
-            pair: '',
-            timeSheet: 8,
-            spentTime: 3,
-            fromDate: '2019-12-04 17:00:00'
-          }
-        ],
-        list4: [
-          {
-            name: 'Mission',
-            id: 11,
-            content: content,
-            owner: 'Reece Lin',
-            pair: 'Alex Zhang',
-            timeSheet: 8,
-            spentTime: 15,
-            fromDate: '2019-12-04 09:13:00'
-          },
-          {
-            name: 'Mission',
-            id: 12,
-            content: content,
-            owner: 'Reece Lin',
-            pair: 'Alex Zhang',
-            timeSheet: 8,
-            spentTime: 10,
-            fromDate: '2019-12-04 08:30:00'
-          },
-          {
-            name: 'Mission',
-            id: 13,
-            content: content,
-            owner: 'Reece Lin',
-            pair: '',
-            timeSheet: 8,
-            spentTime: 3,
-            fromDate: '2019-12-04 08:05:00'
-          }
-        ],
-        options: [{
-          value: '选项1',
-          label: 'Shopping System'
-        }, {
-          value: '选项2',
-          label: 'Todolist System'
-        }, {
-          value: '选项3',
-          label: 'Music System'
-        }],
-        value8: ''
+    setDialogTableVisible(val) {
+      this.dialogTableVisible = val
+    },
+    addTaskData(val) {
+      this.list1.push(JSON.parse(JSON.stringify(val)))
+      this.$store.dispatch('id/addTaskId')
+    },
+    updateTaskData(val) {
+      for (let i = 0; i < this.list1.length; i++) {
+        if (this.list1[i].id === val.id) {
+          this.list1[i] = JSON.parse(JSON.stringify(val))
+        }
       }
-    },
-    methods: {
-      addList(e) {
-        this.dialogTableVisible = true
-      },
-      setDialogTableVisible(val) {
-        this.dialogTableVisible = val
+      for (let i = 0; i < this.list2.length; i++) {
+        if (this.list2[i].id === val.id) {
+          this.list2[i] = JSON.parse(JSON.stringify(val))
+        }
+      }
+      for (let i = 0; i < this.list3.length; i++) {
+        if (this.list3[i].id === val.id) {
+          this.list3[i] = JSON.parse(JSON.stringify(val))
+        }
+      }
+      for (let i = 0; i < this.list4.length; i++) {
+        if (this.list4[i].id === val.id) {
+          this.list4[i] = JSON.parse(JSON.stringify(val))
+        }
       }
     }
   }
+}
 </script>
 <style lang="scss">
   .board {

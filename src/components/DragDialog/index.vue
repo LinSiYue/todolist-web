@@ -12,7 +12,12 @@
           </el-col>
           <el-col :span="11">
             <label class="dialog-label">Date</label>
-            <el-date-picker v-model="cardData.fromDate" class="card-data" type="datetime" placeholder="Please pick a date" />
+            <el-date-picker
+              v-model="cardData.fromDate"
+              class="card-data"
+              type="datetime"
+              placeholder="Please pick a date"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="Owner" prop="title">
@@ -42,11 +47,10 @@
           <el-tag class="tag-title">
             I18n:
           </el-tag>
-          <markdown-editor v-model="content" :language="language" height="300px" />
+          <markdown-editor v-model="cardData.content" :language="language" height="300px" />
         </div>
       </el-form>
-
-      <el-button class="save-button" type="primary">save</el-button>
+      <el-button class="save-button" type="primary" @click="saveData">save</el-button>
     </el-dialog>
   </div>
 </template>
@@ -87,7 +91,7 @@ export default {
         'es': 'es_ES'
       },
       cardData: {
-        id: '8573',
+        id: JSON.parse(JSON.stringify(this.$store.getters.taskId)),
         name: '',
         content: content,
         owner: '',
@@ -122,9 +126,13 @@ export default {
   watch: {
     getDialogTableVisible: function() {
       this.dialogShow = this.dialogTableVisible
+      if (this.dialogData === undefined && this.dialogTableVisible === true) {
+        this.cardData.id = JSON.parse(JSON.stringify(this.$store.getters.taskId))
+      }
     },
     getDialogData: function() {
-      this.cardData = this.dialogData
+      // 解决父组件和子组件数据双向绑定问题
+      this.cardData = JSON.parse(JSON.stringify(this.dialogData))
     }
   },
   methods: {
@@ -136,6 +144,26 @@ export default {
         })
         .catch(_ => {
         })
+    },
+    saveData() {
+      this.$confirm('此操作将更改任务内容, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$emit('setTaskData', this.cardData)
+        this.dialogShow = false
+        this.$emit('setDialogTableVisible', this.dialogShow)
+        this.$message({
+          type: 'success',
+          message: '保存成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消保存'
+        })
+      })
     }
   }
 }

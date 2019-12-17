@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Card />
+    <Card :list="list" />
   </div>
 </template>
 
@@ -14,7 +14,71 @@ export default {
   },
   data: function() {
     return {
-      currentDate: new Date()
+      list: [
+        {
+          id: 0,
+          title: 'Testing project1',
+          content: 'This is a testing project!',
+          manager: 'Reece Lin',
+          member: ['Reece Lin', 'Alex Zhang'],
+          timeSheet: '',
+          createDate: new Date()
+        },
+        {
+          id: 1,
+          title: 'Testing project2',
+          content: 'This is a testing project!',
+          manager: 'Reece Lin',
+          member: ['Reece Lin', 'Alex Zhang'],
+          timeSheet: '',
+          createDate: new Date()
+        },
+        {
+          id: 2,
+          title: 'Testing project3',
+          content: 'This is a testing project!',
+          manager: 'Reece Lin',
+          member: ['Reece Lin', 'Alex Zhang'],
+          timeSheet: '',
+          createDate: new Date()
+        },
+        {
+          id: 3,
+          title: 'Testing project4',
+          content: 'This is a testing project!',
+          manager: 'Reece Lin',
+          member: ['Reece Lin', 'Alex Zhang'],
+          timeSheet: '',
+          createDate: new Date()
+        },
+        {
+          id: 4,
+          title: 'Testing project5',
+          content: 'This is a testing project!',
+          manager: 'Reece Lin',
+          member: ['Reece Lin', 'Alex Zhang'],
+          timeSheet: '',
+          createDate: new Date()
+        },
+        {
+          id: 5,
+          title: 'Testing project6',
+          content: 'This is a testing project!',
+          manager: 'Reece Lin',
+          member: ['Reece Lin', 'Alex Zhang'],
+          timeSheet: '',
+          createDate: new Date()
+        },
+        {
+          id: 6,
+          title: 'Testing project7',
+          content: 'This is a testing project!',
+          manager: 'Reece Lin',
+          member: ['Reece Lin', 'Alex Zhang'],
+          timeSheet: '',
+          createDate: new Date()
+        }
+      ]
     }
   }
 }

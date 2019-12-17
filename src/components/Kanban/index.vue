@@ -31,7 +31,7 @@
         </div>
       </div>
     </draggable>
-    <drag-dialog :dialog-table-visible="dialogTableVisible" :dialog-data="dialogData" @setDialogTableVisible="setDialogTableVisible" />
+    <drag-dialog :dialog-table-visible="dialogTableVisible" :dialog-data="dialogData" @setDialogTableVisible="setDialogTableVisible" @setTaskData="setTaskData" />
   </div>
 </template>
 
@@ -111,6 +111,10 @@ export default {
     },
     setDialogTableVisible(val) {
       this.dialogTableVisible = val
+    },
+    setTaskData(val) {
+      this.dialogData = val
+      this.$emit('updateTaskData', this.dialogData)
     }
   }
 }
@@ -159,7 +163,7 @@ export default {
   }
 
   .kanban-header {
-    background-color: rgb(119, 24, 255);
+    background-color: rgb(47, 113, 171);
     border-radius: 5px 5px 0 0;
     font-size: 16px;
     font-family: inherit;
