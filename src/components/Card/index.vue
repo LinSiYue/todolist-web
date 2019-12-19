@@ -37,6 +37,9 @@ export default {
   data: function() {
     return {
     }
+  },
+  mounted() {
+    console.log(process.env.NODE_ENV)
   }
 }
 </script>

@@ -8,8 +8,7 @@ const mutations = {
     state.projectId += 1
   },
   ADD_TASK_ID: (state) => {
-    console.log(state.taskId + 1)
-    state.taskId = state.taskId + 1
+    state.taskId += 1
   }
 }
 
