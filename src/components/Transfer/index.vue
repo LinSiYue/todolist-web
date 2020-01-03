@@ -1,36 +1,54 @@
 <template>
   <el-transfer
-    v-model="value2"
+    v-model="value3"
+    class="project-member-transfer"
     filterable
-    :filter-method="filterMethod"
-    filter-placeholder="请输入城市拼音"
-    :data="data2"
+    :render-content="renderFunc"
+    :titles="['Staff', 'Member']"
+    :button-texts="['到左边', '到右边']"
+    :format="{
+      noChecked: '${total}',
+      hasChecked: '${checked}/${total}'
+    }"
+    :data="data"
+    @change="handleChange"
   />
 </template>
 
 <script>
 export default {
   data() {
-    const generateData2 = _ => {
+    const generateData = _ => {
       const data = []
-      const cities = ['上海', '北京', '广州', '深圳', '南京', '西安', '成都']
-      const pinyin = ['shanghai', 'beijing', 'guangzhou', 'shenzhen', 'nanjing', 'xian', 'chengdu']
-      cities.forEach((city, index) => {
+      for (let i = 1; i <= 15; i++) {
         data.push({
-          label: city,
-          key: index,
-          pinyin: pinyin[index]
+          key: i,
+          label: `成员 ${i}`
         })
-      })
+      }
       return data
     }
     return {
-      data2: generateData2(),
-      value2: [],
-      filterMethod(query, item) {
-        return item.pinyin.indexOf(query) > -1
+      data: generateData(),
+      value3: [1],
+      renderFunc(h, option) {
+        return <span>{ option.key } - { option.label }</span>
       }
+    }
+  },
+
+  methods: {
+    handleChange(value, direction, movedKeys) {
+      console.log(value, direction, movedKeys)
     }
   }
 }
 </script>
+
+<style scoped>
+.project-member-transfer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+</style>
