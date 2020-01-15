@@ -33,11 +33,11 @@ const actions = {
   login({ commit }, user) {
     const { userName, passWord } = user
     return new Promise((resolve, reject) => {
-      login({ userName: userName.trim(), passWord: passWord }).then(response => {
+      login({ name: userName.trim(), passWord: passWord }).then(response => {
         const { data } = response
-        commit('SET_NAME', data.userName)
+        commit('SET_NAME', data.name)
         commit('SET_TOKEN', data.token)
-        localStorage.setItem('userName', data.userName)
+        localStorage.setItem('userName', data.name)
         localStorage.setItem('token', data.token)
         setToken(data.token)
         resolve()

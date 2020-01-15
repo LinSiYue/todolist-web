@@ -7,7 +7,7 @@
             <div class="card-title">{{ item.title }}</div>
             <div class="card-center">
               <div class="card-description">Description: <br>
-                <p style="text-indent:2em">{{ item.content }}</p>
+                <p style="text-indent:2em">{{ item.description }}</p>
               </div>
               <time class="time">{{ item.createDate }}</time>
             </div>
@@ -56,7 +56,7 @@ export default {
     },
     showProjectMember(member) {
       this.isShowProjectMemberView = true
-      this.projectMember = deepClone(member)
+      this.projectMember = deepClone(member.split(','))
     },
     updateIsShowProjectManageView(value) {
       this.isShowProjectManageView = value

@@ -31,7 +31,12 @@
         </div>
       </div>
     </draggable>
-    <drag-dialog :dialog-table-visible="dialogTableVisible" :dialog-data="dialogData" @setDialogTableVisible="setDialogTableVisible" @setTaskData="setTaskData" />
+    <drag-dialog
+      :dialog-table-visible="dialogTableVisible"
+      :dialog-data="dialogData"
+      @setDialogTableVisible="setDialogTableVisible"
+      @setTaskData="setTaskData"
+    />
   </div>
 </template>
 
@@ -50,12 +55,6 @@ export default {
       type: String,
       default: 'Header'
     },
-    options: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
     list: {
       type: Array,
       default() {
@@ -66,17 +65,7 @@ export default {
   data() {
     return {
       dialogTableVisible: false,
-      dialogData: {},
-      languageTypeList: {
-        'en': 'en_US',
-        'zh': 'zh_CN',
-        'es': 'es_ES'
-      }
-    }
-  },
-  computed: {
-    language() {
-      return this.languageTypeList['en']
+      dialogData: {}
     }
   },
   methods: {
@@ -215,24 +204,6 @@ export default {
     position: absolute;
     top: 35%;
     right: 20%;
-  }
-
-  .dialog-title {
-    white-space: pre-wrap;
-    margin: -30px 0px 30px 0px;
-    display: block;
-    font-size: 18px;
-  }
-
-  .save-button {
-    margin: 20px 0px 0 836px;
-  }
-
-  .new-todo {
-    padding: 10px 16px 16px 60px;
-    border: none;
-    background: rgba(0, 0, 0, 0.003);
-    box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
   }
 </style>
 
