@@ -14,7 +14,7 @@ const name = defaultSettings.title || 'vue Element Admin' // page title
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
 // const port = process.env.port || process.env.npm_config_port || 8086 // dev port
-const port = 8086
+const port = 8087
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   /**
