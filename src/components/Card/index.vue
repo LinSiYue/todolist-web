@@ -13,8 +13,8 @@
             </div>
             <hr>
             <div class="card-bottom">
-              <el-button class="card-btn"><svg-icon icon-class="peoples" /></el-button>
-              <el-button class="card-btn" icon="el-icon-setting" />
+              <el-button class="card-btn"><svg-icon icon-class="peoples" @click="showProjectMember(item.member)" /></el-button>
+              <el-button class="card-btn" icon="el-icon-setting" @click="projectSetting()" />
               <el-button class="card-btn"><svg-icon icon-class="chart" /></el-button>
               <span class="manager-icon"><svg-icon icon-class="user" />{{ item.manager }}</span>
             </div>
@@ -22,12 +22,18 @@
         </el-card>
       </el-col>
     </el-row>
+    <project-manage :is-show="isShowProjectManageView" @updateIsShowProjectManageView="updateIsShowProjectManageView" />
+    <project-member :is-show="isShowProjectMemberView" :project-member="projectMember" @updateIsShowProjectMemberView="updateIsShowProjectMemberView" />
   </div>
 </template>
 
 <script>
+import ProjectManage from '../ProjectManage/index'
+import ProjectMember from '../ProjectMember/index'
+import { deepClone } from '../../utils'
 export default {
   name: 'Card',
+  components: { ProjectManage, ProjectMember },
   props: {
     list: {
       type: Array,
@@ -36,10 +42,28 @@ export default {
   },
   data: function() {
     return {
+      isShowProjectManageView: false,
+      isShowProjectMemberView: false,
+      projectMember: []
     }
   },
   mounted() {
-    console.log(process.env.NODE_ENV)
+    // console.log(process.env.NODE_ENV)
+  },
+  methods: {
+    projectSetting() {
+      this.isShowProjectManageView = true
+    },
+    showProjectMember(member) {
+      this.isShowProjectMemberView = true
+      this.projectMember = deepClone(member)
+    },
+    updateIsShowProjectManageView(value) {
+      this.isShowProjectManageView = value
+    },
+    updateIsShowProjectMemberView(value) {
+      this.isShowProjectMemberView = value
+    }
   }
 }
 </script>

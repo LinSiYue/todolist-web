@@ -93,6 +93,18 @@ export const constantRoutes = [
         meta: { title: 'Profile', icon: 'user', noCache: true }
       }
     ]
+  },
+  {
+    path: '/project-management',
+    component: Layout,
+    redirect: '/project-management',
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/project-management/index'),
+        name: 'Project Management'
+      }
+    ]
   }
 ]
 
@@ -104,18 +116,9 @@ export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
   componentsRouter,
   {
-    path: '/project-management',
-    name: 'Project Management',
-    component: Layout,
-    redirect: '/project-management',
-    children: [
-      {
-        path: '',
-        component: () => import('@/views/project-management/index'),
-        name: 'Project Management',
-        meta: { title: 'Project Management', icon: 'form', roles: ['admin'] }
-      }
-    ]
+    path: '/*',
+    component: () => import('@/views/error-page/404'),
+    hidden: true
   }
 ]
 

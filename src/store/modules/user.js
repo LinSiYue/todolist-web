@@ -7,7 +7,7 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: ''
 }
 
 const mutations = {
@@ -30,12 +30,15 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo
+  login({ commit }, user) {
+    const { userName, passWord } = user
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ userName: userName.trim(), passWord: passWord }).then(response => {
         const { data } = response
+        commit('SET_NAME', data.userName)
         commit('SET_TOKEN', data.token)
+        localStorage.setItem('userName', data.userName)
+        localStorage.setItem('token', data.token)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -46,10 +49,11 @@ const actions = {
 
   // get user info
   getInfo({ commit, state }) {
+    state.name = localStorage.getItem('userName')
+    state.token = localStorage.getItem('token')
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo(state.name, state.token).then(response => {
         const { data } = response
-
         if (!data) {
           reject('Verification failed, please Login again.')
         }
@@ -57,7 +61,7 @@ const actions = {
         const { roles, name, avatar, introduction } = data
 
         // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
+        if (!roles) {
           reject('getInfo: roles must be a non-null array!')
         }
 
@@ -77,9 +81,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
+        commit('SET_ROLES', '')
         removeToken()
         resetRouter()
+        localStorage.clear()
         resolve()
       }).catch(error => {
         reject(error)
@@ -91,7 +96,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
+      commit('SET_ROLES', '')
       removeToken()
       resolve()
     })

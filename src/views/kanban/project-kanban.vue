@@ -20,7 +20,7 @@ export default {
           title: 'Testing project1',
           content: 'This is a testing project!',
           manager: 'Reece Lin',
-          member: ['Reece Lin', 'Alex Zhang'],
+          member: ['Reece Lin'],
           timeSheet: '',
           createDate: new Date()
         },
@@ -38,7 +38,7 @@ export default {
           title: 'Testing project3',
           content: 'This is a testing project!',
           manager: 'Reece Lin',
-          member: ['Reece Lin', 'Alex Zhang'],
+          member: ['Reece Lin'],
           timeSheet: '',
           createDate: new Date()
         },
