@@ -78,15 +78,6 @@ export default {
       currentProject: ''
     }
   },
-  mounted() {
-    findAllProject().then(response => {
-      if (response) {
-        this.projectOptions = deepClone(response.data)
-      }
-    }).catch(error => {
-      alert(error)
-    })
-  },
   watch: {
     list1: {
       handler() {
@@ -148,6 +139,15 @@ export default {
       },
       deep: true
     }
+  },
+  mounted() {
+    findAllProject().then(response => {
+      if (response) {
+        this.projectOptions = deepClone(response.data)
+      }
+    }).catch(error => {
+      alert(error)
+    })
   },
   methods: {
     filter() {
