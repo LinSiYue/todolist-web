@@ -12,10 +12,10 @@
       <div v-for="element in list" :key="element.id" class="board-item">
         <div class="kanban-header">
           <span class="kanban-id">ID：{{ element.id }}</span>
-          <span class="kanban-owner">{{ element.owner + (element.pair != ''? ',' + element.pair:'') }}</span>
+          <span class="kanban-owner">{{ element.owner }}</span>
         </div>
         <div class="kanban-body">
-          <span class="kanban-name">{{ element.name.length > 20 ? element.name.slice(0,20)+'...':element.name }}</span>
+          <span class="kanban-name">{{ element.title.length > 20 ? element.title.slice(0,20)+'...':element.title }}</span>
           <i class="el-icon-edit" @click="dialogShow(element)" />
           <i class="el-icon-delete" style="color: red" @click="deleteList(element)" />
         </div>
@@ -26,7 +26,7 @@
           />
         </div>
         <div class="kanban-footer" :style="{color: element.spentTime/element.timeSheet > 1? 'rgb(255,0,0)':''}">
-          TimeSheet: {{ element.spentTime }}h/{{ element.timeSheet }}h ({{ element.spentTime/element.timeSheet*100
+          TimeSheet: {{ element.spentTime }}h/{{ element.timeSheet }}h ({{ (parseFloat(element.spentTime / element.timeSheet * 100).toFixed(2))
           }} %used)
         </div>
       </div>

@@ -3,12 +3,12 @@
     <div class="top-container">
       <el-button class="add-btn" icon="el-icon-plus" @click="addList" />
       |
-      <el-select v-model="value8" filterable placeholder="Filter task">
+      <el-select v-model="currentProject" filterable placeholder="Filter task" @change="filter">
         <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          v-for="item in projectOptions"
+          :key="item.id"
+          :label="item.title"
+          :value="item.id"
         />
       </el-select>
     </div>
@@ -18,7 +18,7 @@
         :list="list1"
         :group="group"
         class="kanban not started"
-        :header-text="'Not Started('+ list1.length + ')'"
+        :header-text="'Not Started('+ (list1?list1.length:0) + ')'"
         @updateTaskData="updateTaskData"
       />
       <Kanban
@@ -26,7 +26,7 @@
         :list="list2"
         :group="group"
         class="kanban todo"
-        :header-text="'In Progress('+ list2.length + ')'"
+        :header-text="'In Progress('+ (list2?list2.length:0) + ')'"
         @updateTaskData="updateTaskData"
       />
       <Kanban
@@ -34,7 +34,7 @@
         :list="list3"
         :group="group"
         class="kanban working"
-        :header-text="'Test('+ list3.length + ')'"
+        :header-text="'Test('+ (list3?list3.length:0) + ')'"
         @updateTaskData="updateTaskData"
       />
       <Kanban
@@ -42,7 +42,7 @@
         :list="list4"
         :group="group"
         class="kanban done"
-        :header-text="'Done('+ list4.length + ')'"
+        :header-text="'Done('+ (list4?list4.length:0) + ')'"
         @updateTaskData="updateTaskData"
       />
     </div>
@@ -56,15 +56,9 @@
 <script>
 import Kanban from '@/components/Kanban'
 import DragDialog from '@/components/DragDialog'
-
-const content = `
-**This is test**
-
-* vue
-* element
-* webpack
-
-`
+import { findAllProject } from '../../api/project'
+import { findAllTaskByProjectId, updateTask } from '../../api/task'
+import { deepClone } from '../../utils'
 
 export default {
   name: 'DragKanbanDemo',
@@ -76,158 +70,114 @@ export default {
     return {
       dialogTableVisible: false,
       group: 'mission',
-      list1: [
-        {
-          name: 'Mission',
-          id: 1,
-          content: content,
-          owner: 'Reece Lin',
-          pair: 'Alex Zhang',
-          timeSheet: 8,
-          spentTime: 0,
-          fromDate: '2019-12-04 01:00:00'
-        },
-        {
-          name: 'Mission',
-          id: 2,
-          content: content,
-          owner: 'Reece Lin',
-          pair: '',
-          timeSheet: 8,
-          spentTime: 0,
-          fromDate: '2019-12-04 08:00:00'
-        },
-        {
-          name: 'Mission',
-          id: 3,
-          content: content,
-          owner: 'Reece Lin',
-          pair: 'Alex Zhang',
-          timeSheet: 8,
-          spentTime: 0,
-          fromDate: '2019-12-04 12:00:00'
-        },
-        {
-          name: 'Mission',
-          id: 4,
-          content: content,
-          owner: 'Reece Lin',
-          pair: 'Alex Zhang',
-          timeSheet: 8,
-          spentTime: 0,
-          fromDate: '2019-12-04 00:00:00'
-        }
-      ],
-      list2: [
-        {
-          name: 'Mission',
-          id: 5,
-          content: content,
-          owner: 'Reece Lin',
-          pair: 'Alex Zhang',
-          timeSheet: 8,
-          spentTime: 3,
-          fromDate: '2019-12-04 00:00:00'
-        },
-        {
-          name: 'Mission',
-          id: 6,
-          content: content,
-          owner: 'Reece Lin',
-          pair: '',
-          timeSheet: 8,
-          spentTime: 13,
-          fromDate: '2019-12-04 07:00:00'
-        },
-        {
-          name: 'Mission',
-          id: 7,
-          content: content,
-          owner: 'Reece Lin',
-          pair: 'Alex Zhang',
-          timeSheet: 8,
-          spentTime: 3,
-          fromDate: '2019-12-04 13:00:00'
-        }
-      ],
-      list3: [
-        {
-          name: 'Mission',
-          id: 8,
-          content: content,
-          owner: 'Reece Lin',
-          pair: 'Alex Zhang',
-          timeSheet: 8,
-          spentTime: 15,
-          fromDate: '2019-12-04 15:00:00'
-        },
-        {
-          name: 'Mission',
-          id: 9,
-          content: content,
-          owner: 'Reece Lin',
-          pair: 'Alex Zhang',
-          timeSheet: 8,
-          spentTime: 10,
-          fromDate: '2019-12-04 06:00:00'
-        },
-        {
-          name: 'Mission',
-          id: 10,
-          content: content,
-          owner: 'Reece Lin',
-          pair: '',
-          timeSheet: 8,
-          spentTime: 3,
-          fromDate: '2019-12-04 17:00:00'
-        }
-      ],
-      list4: [
-        {
-          name: 'Mission',
-          id: 11,
-          content: content,
-          owner: 'Reece Lin',
-          pair: 'Alex Zhang',
-          timeSheet: 8,
-          spentTime: 15,
-          fromDate: '2019-12-04 09:13:00'
-        },
-        {
-          name: 'Mission',
-          id: 12,
-          content: content,
-          owner: 'Reece Lin',
-          pair: 'Alex Zhang',
-          timeSheet: 8,
-          spentTime: 10,
-          fromDate: '2019-12-04 08:30:00'
-        },
-        {
-          name: 'Mission',
-          id: 13,
-          content: content,
-          owner: 'Reece Lin',
-          pair: '',
-          timeSheet: 8,
-          spentTime: 3,
-          fromDate: '2019-12-04 08:05:00'
-        }
-      ],
-      options: [{
-        value: '选项1',
-        label: 'Shopping System'
-      }, {
-        value: '选项2',
-        label: 'Todolist System'
-      }, {
-        value: '选项3',
-        label: 'Music System'
-      }],
-      value8: ''
+      list1: [],
+      list2: [],
+      list3: [],
+      list4: [],
+      projectOptions: [],
+      currentProject: ''
+    }
+  },
+  mounted() {
+    findAllProject().then(response => {
+      if (response) {
+        this.projectOptions = deepClone(response.data)
+      }
+    }).catch(error => {
+      alert(error)
+    })
+  },
+  watch: {
+    list1: {
+      handler() {
+        this.list1.forEach(item => {
+          if (item.status !== 'NOT_STARTED') {
+            item.status = 'NOT_STARTED'
+            updateTask(item).then(response => {
+              console.log('Success')
+            }).catch(error => {
+              alert(error)
+            })
+          }
+        })
+      },
+      deep: true
+    },
+    list2: {
+      handler() {
+        this.list2.forEach(item => {
+          if (item.status !== 'IN_PROGRESS') {
+            item.status = 'IN_PROGRESS'
+            updateTask(item).then(response => {
+              console.log('Success')
+            }).catch(error => {
+              alert(error)
+            })
+          }
+        })
+      },
+      deep: true
+    },
+    list3: {
+      handler() {
+        this.list3.forEach(item => {
+          if (item.status !== 'TEST') {
+            item.status = 'TEST'
+            updateTask(item).then(response => {
+              console.log('Success')
+            }).catch(error => {
+              alert(error)
+            })
+          }
+        })
+      },
+      deep: true
+    },
+    list4: {
+      handler() {
+        this.list4.forEach(item => {
+          if (item.status !== 'DONE') {
+            item.status = 'DONE'
+            updateTask(item).then(response => {
+              console.log('Success')
+            }).catch(error => {
+              alert(error)
+            })
+          }
+        })
+      },
+      deep: true
     }
   },
   methods: {
+    filter() {
+      this.list1 = []
+      this.list2 = []
+      this.list3 = []
+      this.list4 = []
+      findAllTaskByProjectId(this.currentProject).then(response => {
+        response.data.forEach(item => {
+          switch (item.status) {
+            case 'NOT_STARTED':
+              this.list1.push(item)
+              break
+            case 'IN_PROGRESS':
+              this.list2.push(item)
+              break
+            case 'TEST':
+              this.list3.push(item)
+              break
+            case 'DONE':
+              this.list4.push(item)
+              break
+            default:
+              break
+          }
+        })
+      }).catch(error => {
+        alert(error)
+      })
+    },
     addList(e) {
       this.dialogTableVisible = true
     },
