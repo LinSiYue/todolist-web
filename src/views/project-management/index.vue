@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       currentComponent: 'ProjectMember',
-      activeName: 'second'
+      activeName: 'first'
     }
   },
   methods: {

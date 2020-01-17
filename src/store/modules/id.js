@@ -1,23 +1,23 @@
 const state = {
-  projectId: 8,
-  taskId: 14
+  projectId: 0,
+  taskId: 0
 }
 
 const mutations = {
-  ADD_PROJECT_ID: (state) => {
-    state.projectId += 1
+  SET_PROJECT_ID: (state, id) => {
+    state.projectId = id
   },
-  ADD_TASK_ID: (state) => {
-    state.taskId += 1
+  SET_TASK_ID: (state, id) => {
+    state.taskId = id
   }
 }
 
 const actions = {
-  addProjectId({ commit }) {
-    commit('ADD_PROJECT_ID')
+  setProjectId({ commit }, id) {
+    commit('SET_PROJECT_ID', id)
   },
-  addTaskId({ commit }) {
-    commit('ADD_TASK_ID')
+  setTaskId({ commit }, id) {
+    commit('SET_TASK_ID', id)
   }
 }
 

@@ -16,8 +16,15 @@ export function findAllTaskByProjectId(projectId) {
 
 export function updateTask(data) {
   return request({
-    url: '/task/' + data.id,
+    url: '/task/updateOrCreate',
     method: 'post',
     data
+  })
+}
+
+export function delTaskById(id) {
+  return request({
+    url: '/task/' + id,
+    method: 'delete'
   })
 }

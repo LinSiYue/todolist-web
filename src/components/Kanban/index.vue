@@ -17,7 +17,7 @@
         <div class="kanban-body">
           <span class="kanban-name">{{ element.title.length > 20 ? element.title.slice(0,20)+'...':element.title }}</span>
           <i class="el-icon-edit" @click="dialogShow(element)" />
-          <i class="el-icon-delete" style="color: red" @click="deleteList(element)" />
+          <i class="el-icon-delete" style="color: red" @click="deleteList(element.id)" />
         </div>
         <div class="kanban-progress">
           <div
@@ -43,6 +43,7 @@
 <script>
 import draggable from 'vuedraggable'
 import DragDialog from '@/components/DragDialog'
+import { delTaskById } from '../../api/task'
 
 export default {
   name: 'DragKanbanDemo',
@@ -68,20 +69,42 @@ export default {
       dialogData: {}
     }
   },
+  watch: {
+    list: {
+      handler() {
+        this.list = this.list
+      },
+      deep: true
+    }
+  },
   methods: {
     setData(dataTransfer) {
       // to avoid Firefox bug
       // Detail see : https://github.com/RubaXa/Sortable/issues/1012
       dataTransfer.setData('Text', '')
     },
-    deleteList(element) {
+    deleteList(id) {
       this.$confirm('确认删除？')
         .then(_ => {
-          for (var i = 0; i < this.list.length; i++) {
-            if (this.list[i].id === element.id) {
-              this.list.splice(i, 1)
+          delTaskById(id).then(response => {
+            if (response.data === id.toString()) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.$emit('updateTaskData')
+            } else {
+              this.$message({
+                type: 'info',
+                message: '删除失败!'
+              })
             }
-          }
+          }).catch(error => {
+            this.$message({
+              type: 'error',
+              message: error
+            })
+          })
         })
         .catch(_ => {
         })
@@ -101,9 +124,8 @@ export default {
     setDialogTableVisible(val) {
       this.dialogTableVisible = val
     },
-    setTaskData(val) {
-      this.dialogData = val
-      this.$emit('updateTaskData', this.dialogData)
+    setTaskData() {
+      this.$emit('updateTaskData')
     }
   }
 }

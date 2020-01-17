@@ -16,6 +16,13 @@ export function getInfo(name, token) {
   })
 }
 
+export function getName(query) {
+  return request({
+    url: 'user/getName/' + query,
+    method: 'get'
+  })
+}
+
 export function logout() {
   return request({
     url: '/user/logout',

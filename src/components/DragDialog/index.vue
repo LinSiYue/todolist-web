@@ -27,11 +27,11 @@
               multiple
               filterable
               remote
+              clearable
               :remote-method="searchUser"
-              :loading="loading"
-              reserve-keyword
               class="card-data"
               placeholder="Select Owner"
+              @focus="clearOptions"
             >
               <el-option
                 v-for="item in options"
@@ -47,22 +47,20 @@
           <markdown-editor v-model="cardData.content" :language="language" height="300px" />
         </div>
       </el-form>
-      <el-button class="save-button" type="primary" @click="saveData">save</el-button>
+      <div class="dialog-footer-btn">
+        <el-button type="primary" @click="saveData">save</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import MarkdownEditor from '@/components/MarkdownEditor'
+import { getName } from '../../api/user'
+import { deepClone } from '../../utils'
+import { updateTask } from '../../api/task'
+import { arrayToString, dateFormat } from '../../utils/data-convertor'
 
-const content = `
-**This is test**
-
-* vue
-* element
-* webpack
-
-`
 export default {
   name: 'Index',
   components: {
@@ -76,67 +74,83 @@ export default {
     dialogData: {
       type: Object,
       default: undefined
+    },
+    taskId: {
+      type: Number,
+      default: 0
+    },
+    currentProject: {
+      default: ''
     }
   },
   data: function() {
     return {
-      content: content,
       dialogShow: false,
       languageTypeList: {
         en: 'en_US',
         zh: 'zh_CN',
         es: 'es_ES'
       },
+      originalData: {},
       cardData: {
-        id: JSON.parse(JSON.stringify(this.$store.getters.taskId)),
+        id: this.taskId,
         name: '',
-        content: content,
+        content: '',
         owner: '',
         pair: '',
         timeSheet: 0,
         spentTime: 0,
-        fromDate: ''
+        fromDate: '',
+        status: 'NOT_STARTED',
+        parentProjectId: this.currentProject
       },
-      options: [
-        {
-          value: '选项1',
-          label: 'Reece Lin'
-        },
-        {
-          value: '选项2',
-          label: 'Alex Zhang'
-        },
-        {
-          value: '选项3',
-          label: 'John Huang'
-        }
-      ]
+      options: []
     }
   },
   computed: {
     language() {
       return this.languageTypeList['en']
-    },
-    getDialogTableVisible() {
-      return this.dialogTableVisible
-    },
-    getDialogData() {
-      return this.dialogData
     }
   },
   watch: {
-    getDialogTableVisible: function() {
-      this.dialogShow = this.dialogTableVisible
-      if (this.dialogData === undefined && this.dialogTableVisible === true) {
-        this.cardData.id = JSON.parse(
-          JSON.stringify(this.$store.getters.taskId)
-        )
-      }
+    dialogTableVisible: {
+      handler() {
+        this.dialogShow = this.dialogTableVisible
+        if (this.dialogData === undefined && this.dialogTableVisible === true) {
+          this.cardData.id = JSON.parse(
+            JSON.stringify(this.$store.getters.taskId)
+          )
+        }
+      },
+      deep: true
     },
-    getDialogData: function() {
-      // 解决父组件和子组件数据双向绑定问题
-      this.cardData = JSON.parse(JSON.stringify(this.dialogData))
+    dialogData: {
+      handler() {
+        // 解决父组件和子组件数据双向绑定问题
+        if (this.dialogData) {
+          this.cardData = deepClone(this.dialogData)
+          if (this.cardData.owner) {
+            this.cardData.owner = this.cardData.owner.split(',')
+          }
+        }
+      },
+      deep: true
+    },
+    taskId: {
+      handler() {
+        this.cardData.id = this.taskId
+      },
+      deep: true
+    },
+    currentProject: {
+      handler() {
+        this.cardData.parentProjectId = this.currentProject
+      },
+      deep: true
     }
+  },
+  mounted() {
+    this.originalData = deepClone(this.cardData)
   },
   methods: {
     handleClose(done) {
@@ -145,7 +159,8 @@ export default {
           done()
           this.$emit('setDialogTableVisible', this.dialogShow)
         })
-        .catch(_ => {})
+        .catch(_ => {
+        })
     },
     saveData() {
       this.$confirm('此操作将更改任务内容, 是否继续?', '提示', {
@@ -154,12 +169,20 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.$emit('setTaskData', this.cardData)
-          this.dialogShow = false
-          this.$emit('setDialogTableVisible', this.dialogShow)
-          this.$message({
-            type: 'success',
-            message: '保存成功!'
+          var updateData = deepClone(this.cardData)
+          updateData.owner = arrayToString(updateData.owner)
+          updateData.fromDate = dateFormat(this.cardData.fromDate)
+          updateTask(updateData).then(response => {
+            this.$emit('setTaskData')
+            this.dialogShow = false
+            this.$emit('setDialogTableVisible', this.dialogShow)
+            this.$message({
+              type: 'success',
+              message: '保存成功!'
+            })
+            this.cardData = deepClone(this.originalData)
+          }).catch(error => {
+            alert(error)
           })
         })
         .catch(() => {
@@ -169,44 +192,62 @@ export default {
           })
         })
     },
-    searchUser() {
+    searchUser(query) {
+      this.options = []
+      if (query !== '') {
+        getName(query).then(response => {
+          if (response && response.data.length > 0) {
+            response.data.forEach(item => {
+              this.options.push({ name: item, value: item })
+            })
+          }
+        }).catch(error => {
+          alert(error)
+        })
+      }
+    },
+    clearOptions() {
+      this.options = []
     }
   }
 }
 </script>
 
 <style scoped>
-.dialog {
-  margin-top: -2%;
-}
+  .dialog {
+    margin-top: -2%;
+  }
 
-.dialog-title {
-  white-space: pre-wrap;
-  margin: -30px 0px 30px 0px;
-  display: block;
-  font-size: 18px;
-}
+  .dialog-title {
+    white-space: pre-wrap;
+    margin: -30px 0px 30px 0px;
+    display: block;
+    font-size: 18px;
+  }
 
-.dialog-form {
-  width: 94%;
-  margin-left: 3%;
-}
+  .dialog-form {
+    width: 94%;
+    margin-left: 3%;
+  }
 
-.card-data {
-  margin-left: 15px;
-  width: 65.7%;
-}
+  .card-data {
+    margin-left: 15px;
+    width: 65.7%;
+  }
 
-.card-data-title {
-  width: 30%;
-  margin-left: 15px;
-}
+  .card-data-title {
+    width: 30%;
+    margin-left: 15px;
+  }
 
-.dialog-label {
-  width: 70px;
-}
+  .dialog-label {
+    width: 70px;
+  }
 
-.save-button {
-  margin: 20px 0px 0 836px;
-}
+  .dialog-footer-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
 </style>

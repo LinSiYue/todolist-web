@@ -1,8 +1,6 @@
 <template>
   <div>
     <div class="top-container">
-      <el-button class="add-btn" icon="el-icon-plus" @click="addList" />
-      |
       <el-select v-model="currentProject" filterable placeholder="Filter task" @change="filter">
         <el-option
           v-for="item in projectOptions"
@@ -11,6 +9,8 @@
           :value="item.id"
         />
       </el-select>
+      |
+      <el-button v-if="currentProject" class="add-btn" icon="el-icon-plus" @click="addTask"/>
     </div>
     <div class="components-container board">
       <Kanban
@@ -19,7 +19,7 @@
         :group="group"
         class="kanban not started"
         :header-text="'Not Started('+ (list1?list1.length:0) + ')'"
-        @updateTaskData="updateTaskData"
+        @updateTaskData="filter"
       />
       <Kanban
         :key="2"
@@ -27,7 +27,7 @@
         :group="group"
         class="kanban todo"
         :header-text="'In Progress('+ (list2?list2.length:0) + ')'"
-        @updateTaskData="updateTaskData"
+        @updateTaskData="filter"
       />
       <Kanban
         :key="3"
@@ -35,7 +35,7 @@
         :group="group"
         class="kanban working"
         :header-text="'Test('+ (list3?list3.length:0) + ')'"
-        @updateTaskData="updateTaskData"
+        @updateTaskData="filter"
       />
       <Kanban
         :key="4"
@@ -43,13 +43,15 @@
         :group="group"
         class="kanban done"
         :header-text="'Done('+ (list4?list4.length:0) + ')'"
-        @updateTaskData="updateTaskData"
+        @updateTaskData="filter"
       />
     </div>
     <drag-dialog
       :dialog-table-visible="dialogTableVisible"
+      :taskId="taskId"
+      :currentProject="currentProject"
       @setDialogTableVisible="setDialogTableVisible"
-      @setTaskData="addTaskData"
+      @setTaskData="filter"
     />
   </div>
 </template>
@@ -57,7 +59,7 @@
 import Kanban from '@/components/Kanban'
 import DragDialog from '@/components/DragDialog'
 import { findAllProject } from '../../api/project'
-import { findAllTaskByProjectId, updateTask } from '../../api/task'
+import { findAllTask, findAllTaskByProjectId, updateTask } from '../../api/task'
 import { deepClone } from '../../utils'
 
 export default {
@@ -75,7 +77,8 @@ export default {
       list3: [],
       list4: [],
       projectOptions: [],
-      currentProject: ''
+      currentProject: '',
+      taskId: 0
     }
   },
   watch: {
@@ -178,37 +181,14 @@ export default {
         alert(error)
       })
     },
-    addList(e) {
-      this.dialogTableVisible = true
-    },
     setDialogTableVisible(val) {
       this.dialogTableVisible = val
     },
-    addTaskData(val) {
-      this.list1.push(JSON.parse(JSON.stringify(val)))
-      this.$store.dispatch('id/addTaskId')
-    },
-    updateTaskData(val) {
-      for (let i = 0; i < this.list1.length; i++) {
-        if (this.list1[i].id === val.id) {
-          this.list1[i] = JSON.parse(JSON.stringify(val))
-        }
-      }
-      for (let i = 0; i < this.list2.length; i++) {
-        if (this.list2[i].id === val.id) {
-          this.list2[i] = JSON.parse(JSON.stringify(val))
-        }
-      }
-      for (let i = 0; i < this.list3.length; i++) {
-        if (this.list3[i].id === val.id) {
-          this.list3[i] = JSON.parse(JSON.stringify(val))
-        }
-      }
-      for (let i = 0; i < this.list4.length; i++) {
-        if (this.list4[i].id === val.id) {
-          this.list4[i] = JSON.parse(JSON.stringify(val))
-        }
-      }
+    addTask() {
+      this.dialogTableVisible = true
+      findAllTask().then(response => {
+        this.taskId = response.data[response.data.length - 1].id + 1
+      })
     }
   }
 }

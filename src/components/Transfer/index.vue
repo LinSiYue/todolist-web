@@ -1,54 +1,53 @@
 <template>
   <el-transfer
     v-model="value3"
-    class="project-member-transfer"
     filterable
-    :render-content="renderFunc"
-    :titles="['Staff', 'Member']"
-    :button-texts="['到左边', '到右边']"
-    :format="{
-      noChecked: '${total}',
-      hasChecked: '${checked}/${total}'
-    }"
-    :data="data"
-    @change="handleChange"
+    :filter-method="filterMethod"
+    filter-placeholder="select member"
+    :data="member"
   />
 </template>
 
 <script>
+import { getName } from '../../api/user'
+
 export default {
   data() {
-    const generateData = _ => {
-      const data = []
-      for (let i = 1; i <= 15; i++) {
-        data.push({
-          key: i,
-          label: `成员 ${i}`
-        })
-      }
-      return data
-    }
     return {
-      data: generateData(),
-      value3: [1],
-      renderFunc(h, option) {
-        return <span>{ option.key } - { option.label }</span>
-      }
+      member: [],
+      value3: []
     }
   },
-
+  mounted() {
+    getName('_').then(response => {
+      if (response.data) {
+        response.data.forEach((item, index) => {
+          this.member.push({
+            label: item,
+            key: index,
+            filter: item
+          })
+        })
+      }
+    }).catch(error => {
+      alert(error)
+    })
+  },
   methods: {
     handleChange(value, direction, movedKeys) {
       console.log(value, direction, movedKeys)
+    },
+    filterMethod(query, item) {
+      return item.filter.toLowerCase().indexOf(query.toLowerCase()) > -1
     }
   }
 }
 </script>
 
 <style scoped>
-.project-member-transfer {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-}
+  .project-member-transfer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
 </style>
