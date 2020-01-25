@@ -23,11 +23,23 @@ export default {
     height: {
       type: String,
       default: '300px'
+    },
+    chartData: {
+      type: Array,
+      default: undefined
     }
   },
   data() {
     return {
       chart: null
+    }
+  },
+  watch: {
+    chartData: {
+      handler() {
+        this.setOption(this.chartData)
+      },
+      deep: true
     }
   },
   mounted() {
@@ -45,7 +57,9 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-
+      this.setOption({})
+    },
+    setOption(chartData) {
       this.chart.setOption({
         tooltip: {
           trigger: 'axis',
@@ -62,7 +76,7 @@ export default {
         },
         xAxis: [{
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: ['Not Started', 'In Progress', 'Test', 'Done'],
           axisTick: {
             alignWithLabel: true
           }
@@ -74,25 +88,18 @@ export default {
           }
         }],
         series: [{
-          name: 'pageA',
+          name: 'spentTime',
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [79, 52, 200, 334, 390, 330, 220],
+          data: chartData[0],
           animationDuration
         }, {
-          name: 'pageB',
+          name: 'timeSheet',
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [80, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageC',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [30, 52, 200, 334, 390, 330, 220],
+          data: chartData[1],
           animationDuration
         }]
       })

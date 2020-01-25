@@ -20,12 +20,24 @@ export default {
     },
     height: {
       type: String,
-      default: '300px'
+      default: '320px'
+    },
+    chartData: {
+      type: Array,
+      default: undefined
     }
   },
   data() {
     return {
       chart: null
+    }
+  },
+  watch: {
+    chartData: {
+      handler() {
+        this.setOption(this.chartData)
+      },
+      deep: true
     }
   },
   mounted() {
@@ -43,7 +55,9 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-
+      this.setOption({})
+    },
+    setOption(chartData) {
       this.chart.setOption({
         tooltip: {
           trigger: 'item',
@@ -61,18 +75,13 @@ export default {
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
-            data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
-            ],
+            data: chartData,
             animationEasing: 'cubicInOut',
             animationDuration: 2600
           }
         ]
       })
+      console.log(chartData)
     }
   }
 }

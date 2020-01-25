@@ -93,18 +93,6 @@ export const constantRoutes = [
         meta: { title: 'Profile', icon: 'user', noCache: true }
       }
     ]
-  },
-  {
-    path: '/project-management',
-    component: Layout,
-    redirect: '/project-management',
-    children: [
-      {
-        path: '',
-        component: () => import('@/views/project-management/index'),
-        name: 'Project Management'
-      }
-    ]
   }
 ]
 

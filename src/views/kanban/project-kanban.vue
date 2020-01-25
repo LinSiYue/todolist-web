@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Card :list="list" />
+    <Card :list="list" @setProjectSuccess="setProjectSuccess" />
   </div>
 </template>
 
@@ -25,6 +25,15 @@ export default {
     }).catch(error => {
       alert(error)
     })
+  },
+  methods: {
+    setProjectSuccess() {
+      findAllProject().then(response => {
+        this.list = deepClone(response.data)
+      }).catch(error => {
+        alert(error)
+      })
+    }
   }
 }
 </script>

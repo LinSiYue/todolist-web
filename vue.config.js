@@ -53,7 +53,7 @@ module.exports = {
         }
       }
     },
-    public: '127.0.0.1:8087'
+    public: '127.0.0.1:8089'
     // after: require('./mock/mock-server.js')
   },
   configureWebpack: {

@@ -80,6 +80,7 @@ export default {
       default: 0
     },
     currentProject: {
+      type: String,
       default: ''
     }
   },

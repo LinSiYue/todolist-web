@@ -1,6 +1,7 @@
 <template>
   <el-dialog class="dialog" :visible.sync="dialogShow" :close-on-press-escape="false" :close-on-click-modal="false">
     <div>
+      <label>Project Members</label>
       <ul v-for="(item, index) in projectMember" :key="index">
         <li>{{ item }}</li>
       </ul>

@@ -6,3 +6,11 @@ export function findAllProject() {
     method: 'get'
   })
 }
+
+export function saveProject(data) {
+  return request({
+    url: '/project/save',
+    method: 'post',
+    data
+  })
+}
