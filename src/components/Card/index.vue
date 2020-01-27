@@ -1,10 +1,16 @@
 <template>
   <div class="card-board">
+    <div class="top-container">
+      <el-button type="primary" class="add-btn" icon="el-icon-plus" @click="addProject">Add Project</el-button>
+    </div>
     <el-row>
       <el-col v-for="(item, index) in list" :key="item.id" :span="6" :offset="index%3 != 0 ? 2 : 0">
         <el-card class="card" :body-style="{ padding: '0px' }">
           <div style="padding: 14px;">
-            <div class="card-title">{{ item.title }}</div>
+            <div class="card-title">
+              {{ item.title }}
+              <i v-if="$store.getters.name === item.manager" class="el-icon-delete" @click="del(item.id)" />
+            </div>
             <div class="card-center">
               <div class="card-description">Description: <br>
                 <p style="text-indent:2em">{{ item.description }}</p>
@@ -29,11 +35,12 @@
 </template>
 
 <script>
-import ProjectManage from '../../views/project-management/transfer'
+import ProjectManage from '../../views/project-management/projectManage'
 import ProjectMember from '../../views/project-management/basicInformation'
 import ProjectDashboard from '../../views/project-management/dashboard'
 import { deepClone } from '../../utils'
 import { findAllTaskByProjectId } from '../../api/task'
+import { deleteProject } from '../../api/project'
 
 export default {
   name: 'Card',
@@ -139,6 +146,41 @@ export default {
     },
     setProjectSuccess() {
       this.$emit('setProjectSuccess')
+    },
+    addProject() {
+      this.project = { id: 0 }
+      this.projectMember = []
+      this.isShowProjectManageView = true
+    },
+    del(id) {
+      this.$confirm('确认删除？')
+        .then(_ => {
+          deleteProject(id).then(response => {
+            if (response.data === id.toString()) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.$emit('setProjectSuccess')
+            } else {
+              this.$message({
+                type: 'info',
+                message: '删除失败!'
+              })
+            }
+          }).catch(error => {
+            this.$message({
+              type: 'error',
+              message: error
+            })
+          })
+        })
+        .catch(error => {
+          this.$message({
+            type: 'error',
+            message: error
+          })
+        })
     }
   }
 }
@@ -154,14 +196,28 @@ export default {
     margin-bottom: 100px;
     border: 1px solid rgb(211,211,211);
   }
-
+  .add-btn {
+    border-radius: 0;
+    padding: 0;
+    width: 120px;
+    height: 35px;
+  }
+  .top-container{
+    width: 90%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .card-title {
     font-size: 16px;
     font-weight: bolder;
     color: rgb(51, 122, 183);
     margin-bottom: 20px;
   }
-
+  .el-icon-delete{
+    float: right;
+  }
   .time {
     font-size: 13px;
     color: #999;

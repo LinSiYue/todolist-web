@@ -7,7 +7,7 @@
 <script>
 import Card from '@/components/Card'
 import { deepClone } from '../../utils'
-import { findAllProject } from '../../api/project'
+import { findProjectByName } from '../../api/project'
 
 export default {
   name: 'ProjectKanban',
@@ -20,7 +20,7 @@ export default {
     }
   },
   mounted() {
-    findAllProject().then(response => {
+    findProjectByName(this.$store.getters.name).then(response => {
       this.list = deepClone(response.data)
     }).catch(error => {
       alert(error)
@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     setProjectSuccess() {
-      findAllProject().then(response => {
+      findProjectByName(this.$store.getters.name).then(response => {
         this.list = deepClone(response.data)
       }).catch(error => {
         alert(error)

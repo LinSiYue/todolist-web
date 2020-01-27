@@ -2,11 +2,11 @@
   <div>
     <el-dialog class="dialog" :visible.sync="dialogShow" :before-close="handleClose">
       <el-form class="dialog-form" :model="cardData" label-position="left" label-width="70px">
-        <span class="dialog-title">ID: {{ cardData.id }}</span>
+        <span v-if="cardData.id != 0" class="dialog-title">ID: {{ cardData.id }}</span>
         <el-form-item label="Title" prop="title">
           <el-input v-model="cardData.title" class="card-data-title" maxlength="30" />
         </el-form-item>
-        <el-form-item label="TimeSheet" prop="timestamp">
+        <el-form-item label="TimeSheet" prop="timeSheet">
           <el-col :span="11">
             <el-input v-model="cardData.timeSheet" class="card-data" maxlength="3" />
           </el-col>
@@ -75,10 +75,6 @@ export default {
       type: Object,
       default: undefined
     },
-    taskId: {
-      type: Number,
-      default: 0
-    },
     currentProject: {
       type: String,
       default: ''
@@ -94,7 +90,7 @@ export default {
       },
       originalData: {},
       cardData: {
-        id: this.taskId,
+        id: 0,
         name: '',
         content: '',
         owner: '',
@@ -117,11 +113,6 @@ export default {
     dialogTableVisible: {
       handler() {
         this.dialogShow = this.dialogTableVisible
-        if (this.dialogData === undefined && this.dialogTableVisible === true) {
-          this.cardData.id = JSON.parse(
-            JSON.stringify(this.$store.getters.taskId)
-          )
-        }
       },
       deep: true
     },
@@ -137,15 +128,9 @@ export default {
       },
       deep: true
     },
-    taskId: {
-      handler() {
-        this.cardData.id = this.taskId
-      },
-      deep: true
-    },
     currentProject: {
       handler() {
-        this.cardData.parentProjectId = this.currentProject
+        this.cardData.parentProjectId = parseInt(this.currentProject)
       },
       deep: true
     }

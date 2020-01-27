@@ -6,11 +6,11 @@
           v-for="item in projectOptions"
           :key="item.id"
           :label="item.title"
-          :value="item.id"
+          :value="item.id.toString()"
         />
       </el-select>
       |
-      <el-button v-if="currentProject" class="add-btn" icon="el-icon-plus" @click="addTask"/>
+      <el-button v-if="currentProject" class="add-btn" icon="el-icon-plus" @click="addTask" />
     </div>
     <div class="components-container board">
       <Kanban
@@ -48,8 +48,7 @@
     </div>
     <drag-dialog
       :dialog-table-visible="dialogTableVisible"
-      :taskId="taskId"
-      :currentProject="currentProject"
+      :current-project="currentProject"
       @setDialogTableVisible="setDialogTableVisible"
       @setTaskData="filter"
     />
@@ -58,8 +57,8 @@
 <script>
 import Kanban from '@/components/Kanban'
 import DragDialog from '@/components/DragDialog'
-import { findAllProject } from '../../api/project'
-import { findAllTask, findAllTaskByProjectId, updateTask } from '../../api/task'
+import { findProjectByName } from '../../api/project'
+import { findAllTaskByProjectId, updateTask } from '../../api/task'
 import { deepClone } from '../../utils'
 
 export default {
@@ -77,8 +76,7 @@ export default {
       list3: [],
       list4: [],
       projectOptions: [],
-      currentProject: '',
-      taskId: 0
+      currentProject: ''
     }
   },
   watch: {
@@ -144,7 +142,7 @@ export default {
     }
   },
   mounted() {
-    findAllProject().then(response => {
+    findProjectByName(this.$store.getters.name).then(response => {
       if (response) {
         this.projectOptions = deepClone(response.data)
       }
@@ -186,9 +184,6 @@ export default {
     },
     addTask() {
       this.dialogTableVisible = true
-      findAllTask().then(response => {
-        this.taskId = response.data[response.data.length - 1].id + 1
-      })
     }
   }
 }

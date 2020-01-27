@@ -106,7 +106,11 @@ export default {
             })
           })
         })
-        .catch(_ => {
+        .catch(error => {
+          this.$message({
+            type: 'error',
+            message: error
+          })
         })
     },
     handleClose(done) {
