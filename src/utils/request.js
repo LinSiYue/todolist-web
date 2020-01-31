@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+// import { checkToken } from '../api/token'
 
 // create an axios instance
 const service = axios.create({
@@ -14,12 +15,18 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
+      config.headers['token'] = getToken()
+      config.headers['name'] = store.getters.name
+      // checkToken(store.getters.name, store.getters.token).then(response => {
+      //   if (response.data) {
+      //     config.headers['token'] = getToken()
+      //     config.headers['name'] = store.getters.name
+      //   }
+      // })
     }
     return config
   },
