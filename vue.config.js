@@ -52,8 +52,8 @@ module.exports = {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
-    }
-    // public: '127.0.0.1:8089'
+    },
+    public: '127.0.0.1:8087'
     // after: require('./mock/mock-server.js')
   },
   configureWebpack: {

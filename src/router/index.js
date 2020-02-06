@@ -102,6 +102,29 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
+  {
+    path: '/permission',
+    component: Layout,
+    name: 'Permission',
+    redirect: '/permission/role',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'Permission',
+      icon: 'lock',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'role',
+        component: () => import('@/views/permission/role'),
+        name: 'RolePermission',
+        meta: {
+          title: 'Role Permission',
+          roles: ['admin']
+        }
+      }
+    ]
+  },
   componentsRouter,
   {
     path: '/*',
