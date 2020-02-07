@@ -18,8 +18,39 @@ export function getInfo(name, token) {
 
 export function getName(query) {
   return request({
-    url: 'user/getName/' + query,
+    url: '/user/getName/' + query,
     method: 'get'
+  })
+}
+
+export function getAll() {
+  return request({
+    url: '/user/getAll',
+    method: 'get'
+  })
+}
+
+export function changePassWordByName(name, passWord) {
+  return request({
+    url: '/user/changePassWord',
+    method: 'post',
+    params: { name, passWord }
+  })
+}
+
+export function deleteUserByName(name) {
+  return request({
+    url: '/user/delete/' + name,
+    method: 'delete'
+  })
+}
+
+export function saveUser(data) {
+  console.log(data)
+  return request({
+    url: '/user/save',
+    method: 'post',
+    data
   })
 }
 
