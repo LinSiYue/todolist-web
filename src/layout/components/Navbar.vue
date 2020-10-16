@@ -30,12 +30,29 @@
           <router-link to="/">
             <el-dropdown-item>Dashboard</el-dropdown-item>
           </router-link>
+          <el-dropdown-item>
+            <span style="display:block;" @click="openDialog">Change PassWord</span>
+          </el-dropdown-item>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">Log Out</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog :visible.sync="dialogVisible" title="Change PassWord">
+      <el-form label-width="80px" label-position="left">
+        <el-form-item label="Old PassWord" :required="true">
+          <el-input v-model="oldPassWord" type="password" placeholder="Old PassWord" />
+        </el-form-item>
+        <el-form-item label="New PassWord" :required="true">
+          <el-input v-model="newPassWord" type="password" placeholder="New PassWord" />
+        </el-form-item>
+      </el-form>
+      <div style="text-align:right;">
+        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
+        <el-button type="primary" @click="changePassWord">Confirm</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -47,6 +64,7 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
+import { changePassWord } from '@/api/user'
 
 export default {
   components: {
@@ -56,6 +74,13 @@ export default {
     Screenfull,
     SizeSelect,
     Search
+  },
+  data() {
+    return {
+      dialogVisible: false,
+      oldPassWord: '',
+      newPassWord: ''
+    }
   },
   computed: {
     ...mapGetters([
@@ -71,6 +96,30 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    openDialog() {
+      this.dialogVisible = true
+      this.oldPassWord = ''
+      this.newPassWord = ''
+    },
+    changePassWord() {
+      // 加密
+      changePassWord(this.$store.getters.name, this.oldPassWord, this.newPassWord).then(response => {
+        if (response.data === this.$store.getters.name) {
+          this.$message({
+            type: 'success',
+            message: '修改密码成功!'
+          })
+        } else {
+          this.$message({
+            type: 'info',
+            message: '输入的原密码错误!'
+          })
+        }
+        this.dialogVisible = false
+      }).catch(error => {
+        alert(error)
+      })
     }
   }
 }
@@ -157,5 +206,12 @@ export default {
       }
     }
   }
+}
+.el-form >>> .el-form-item__label {
+  min-width: 140px;
+}
+.el-form >>> .el-form-item__content {
+  margin-left: 140px !important;
+  width: 60%;
 }
 </style>

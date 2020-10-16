@@ -14,7 +14,7 @@ const name = defaultSettings.title || 'vue Element Admin' // page title
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
 // const port = process.env.port || process.env.npm_config_port || 8086 // dev port
-const port = 8087
+const port = 8080
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   /**
@@ -24,10 +24,10 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: './',
   outputDir: 'dist',
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  lintOnSave: process.env.NODE_ENV === 'production',
   productionSourceMap: false,
   devServer: {
     port: port,
@@ -46,14 +46,14 @@ module.exports = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         // target: `http://127.0.0.1:${port}/mock`,
-        target: 'http://127.0.0.1:8086',
+        target: 'http://127.0.0.1:8080',
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
     },
-    public: '127.0.0.1:8087'
+    public: '127.0.0.1:8080'
     // after: require('./mock/mock-server.js')
   },
   configureWebpack: {

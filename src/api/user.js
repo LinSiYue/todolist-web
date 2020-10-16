@@ -30,11 +30,19 @@ export function getAll() {
   })
 }
 
-export function changePassWordByName(name, passWord) {
+export function resetPassWordByName(name, passWord) {
+  return request({
+    url: '/user/resetPassWord',
+    method: 'post',
+    params: { name, passWord }
+  })
+}
+
+export function changePassWord(name, oldPassWord, newPassWord) {
   return request({
     url: '/user/changePassWord',
     method: 'post',
-    params: { name, passWord }
+    params: { name, oldPassWord, newPassWord }
   })
 }
 

@@ -26,15 +26,15 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
+    <el-dialog :visible.sync="dialogVisible" title="Edit Role">
       <el-form :model="role" label-width="80px" label-position="left">
         <el-form-item label="Avatar">
           <img :src="role.avatar" style="width: 50px;height: 50px">
         </el-form-item>
-        <el-form-item label="Name" required="true">
+        <el-form-item label="Name" :required="true">
           <el-input v-model="role.name" placeholder="Role Name" />
         </el-form-item>
-        <el-form-item label="PassWord" required="true">
+        <el-form-item label="PassWord" :required="true">
           <el-input v-model="role.passWord" type="password" placeholder="Role PassWord" />
         </el-form-item>
         <el-form-item label="Phone">
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { getAll, deleteUserByName, changePassWordByName, saveUser } from '@/api/user'
+import { getAll, deleteUserByName, resetPassWordByName, saveUser } from '@/api/user'
 
 const defaultRole = {
   name: '',
@@ -71,16 +71,9 @@ const defaultRole = {
 export default {
   data() {
     return {
-      routes: [],
       rolesList: [],
       role: '',
-      dialogVisible: false,
-      dialogType: 'new',
-      checkStrictly: false,
-      defaultProps: {
-        children: 'children',
-        label: 'title'
-      }
+      dialogVisible: false
     }
   },
   computed: {
@@ -141,7 +134,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          changePassWordByName(name, 'Lin123.').then(response => {
+          resetPassWordByName(name, 'Lin123.').then(response => {
             if (response.data === name) {
               this.$message({
                 type: 'success',
